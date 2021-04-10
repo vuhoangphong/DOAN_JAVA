@@ -1,0 +1,79 @@
+
+html, body, header, .carousel {
+    height: 60vh;
+}
+
+@media ( max-width : 740px) {
+    html, body, header, .carousel {
+        height: 100vh;
+    }
+}
+
+@media ( min-width : 800px) and (max-width: 850px) {
+    html, body, header, .carousel {
+        height: 100vh;
+    }
+}
+
+.navbar .dropdown-menu {
+    margin-top: 32px
+}
+.dropdown-item {
+    padding: 10px;
+}
+
+.notdiscount{
+    text-decoration: line-through;
+    box-shadow: 0px 0px 0px 0 rgba(0,0,0,.16), 0 0px 0px 0 rgba(0,0,0,.12);
+    background-color: white!important
+}
+
+.yellow-text {
+    color: #dcb731!important;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 10px;
+}
+.mb-0, .my-0 {
+    
+}
+.navbar .dropdown-menu {
+     margin-top: 0px;}
+     
+.rgba-black-strong, .rgba-black-strong:after {
+   background-color: rgba(0, 0, 0, 0)
+}
+.input-success{
+    border-bottom: 1px solid limegreen !important;
+    box-shadow: 0 1px 0 0 limegreen !important;
+}
+
+.input-error{
+   border-bottom: 1px solid red !important;
+    box-shadow: 0 1px 0 0 red !important;
+}
+
+.banner-default1{
+    background-image: url("../img/banner/1.jpg"); 
+    background-repeat: no-repeat;
+     background-size: cover;
+}
+
+.banner-default2{
+    background-image: url("../img/banner/2.jpg"); 
+    background-repeat: no-repeat;
+     background-size: cover;
+}
+
+.banner-default3{
+    background-image: url("../img/banner/3.jpg"); 
+    background-repeat: no-repeat;
+     background-size: cover;
+}

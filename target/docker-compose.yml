@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    ports: 
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=product1
+      - MYSQL_PASSWORD=root
+    volumes:
+      - mysql_data:/var/lib/mysql1
+    networks:
+      - logstash_network
+  elasticsearch: 
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    ports:
+      - 9300:9300
+      - 9200:9200
+    environment:
+      - transport.host=127.0.0.1
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xms512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - logstash_network 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    ports:
+      - 5601:5601
+    networks:
+      - logstash_network
+    depends_on: 
+      - elasticsearch
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    environment:
+      - LOGSTASH_JDBC_URL=jdbc:mysql://mysql:3306/badminton?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false 
+      - LOGSTASH_JDBC_DRIVER=com.mysql.cj.jdbc.Driver
+      - LOGSTASH_JDBC_USERNAME=root
+      - LOGSTASH_JDBC_PASSWORD=root
+    ports:
+      - 9600:9600
+      - 5044:5044
+    networks:
+      - logstash_network
+    volumes: 
+      - ./logstash-input-jdbc.conf:/run/desktop/mnt/host/d/Docker/Docker-badminton/logstash-input-jdbc.conf/product.conf
+    depends_on: 
+      - elasticsearch
+      - kibana
+      - mysql
+  springboot-docker-container:
+    image: springboot-docker-container
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/badminton?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true
+      - SPRING_DATASOURCE_USERNAME:root
+      - SPRING_DATASOURCE_PASSWORD:root
+    build:
+      context: "./"
+      dockerfile: "DockerFile"
+   
+    depends_on: 
+      - elasticsearch
+      - kibana
+      - mysql 
+volumes:
+  elasticsearch_data:
+  mysql_data:
+networks:
+  logstash_network:

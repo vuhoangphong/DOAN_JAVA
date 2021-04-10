@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - EncrytedPasswordUtils",
+            "request": "launch",
+            "mainClass": "web.badminton.utils.EncrytedPasswordUtils",
+            "projectName": "badminton"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MainController",
+            "request": "launch",
+            "mainClass": "web.badminton.controller.MainController",
+            "projectName": "badminton"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BadmintonApplication<badminton>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "web.badminton.BadmintonApplication",
+            "projectName": "badminton",
+            "args": ""
+        }
+    ]
+}
