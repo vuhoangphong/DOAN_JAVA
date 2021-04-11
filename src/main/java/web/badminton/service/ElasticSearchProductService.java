@@ -38,7 +38,9 @@ import web.badminton.vo.ProductPortfolio;
 @Service
 public class ElasticSearchProductService {
 
-   
+   @Autowired
+    ProductBrandsRepository brandsRepository;
+
     @Autowired
     ProductPortfolioRepository productPortfolio;
 
@@ -49,7 +51,12 @@ public class ElasticSearchProductService {
         return resultProduct(url,requestJson);
     }
 
-   
+   public List<Product> getBrands(String idBrand,String min , String max) {
+
+        String url = "http://localhost:9200/producttest/_search";
+       String requestJson = getProductBrand(idBrand, min, max);
+        return resultProduct(url,requestJson);
+    }
     
 
 
@@ -124,7 +131,79 @@ public class ElasticSearchProductService {
     }
 
    
-  
+   private String getProductBrand(String idBrand,String min,String max){
+        
+        QueryES queryES = new QueryES();
+        Query query = new Query();
+        Bool bool = new Bool();
+        Must mustOfQueyString = new Must();
+        Must mustOfRange = new Must();
+        QueryString queryString = new QueryString();
+        Range range = new Range();
+        PriceES priceES = new PriceES();
+        List<Must> musts = new ArrayList<>();
+    
+     
+        //multi_Match
+        queryString.setFields(new String[]{"idbrand"});
+        queryString.setQuery(idBrand);
+        if(StringUtils.isEmpty(max) & !StringUtils.isEmpty(min)){
+             //price
+             priceES.setBoots("2.0");
+             priceES.setGte(min); // set price min
+             priceES.setLte("1000000000"); // set price max
+             //range
+             range.setPriceES(priceES);
+             // filter
+             mustOfRange.setRange(range);
+              //set rang into range
+             musts.add(mustOfRange);
+        }
+         if(!StringUtils.isEmpty(max) && StringUtils.isEmpty(min)){
+             //price
+             priceES.setBoots("2.0");
+             priceES.setGte("0"); // set price min
+             priceES.setLte(max); // set price max
+             //range
+             range.setPriceES(priceES);
+             // filter
+             mustOfRange.setRange(range);
+              //set rang into range
+            musts.add(mustOfRange);
+        }
+        if(StringUtils.isEmpty(max) ==false && StringUtils.isEmpty(min)== false){
+            //price
+            priceES.setBoots("2.0");
+            priceES.setGte(min); // set price min
+            priceES.setLte(max); // set price max
+            //range
+            range.setPriceES(priceES);
+            // filter
+            mustOfRange.setRange(range);
+             //set rang into range
+            musts.add(mustOfRange);
+        }   
+        mustOfQueyString.setQueryString(queryString);
+            //track scores true
+        queryES.setTrackScore(true);
+
+        
+        //set query string into must
+        musts.add(mustOfQueyString);
+       
+
+        bool.setMust(musts);
+        query.setBool(bool);
+        queryES.setQuery(query);
+        return new Gson().toJson(queryES);
+    }
+
+    public List<ProductBrands> getBrand(String id){
+        List<ProductBrands> brands = brandsRepository.findBrands(id);
+        List<ProductBrands> ListBrand =  productPortfolio.findNamePortfolio(String.valueOf(brands.get(0).getIdType()));
+        return ListBrand;
+    }
+
     private List<Product>  resultProduct(String url,String requestJson){
         Gson gson = new Gson();
         
